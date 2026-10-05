@@ -4,6 +4,8 @@ WPBench benchmarks 19 forecasting models on 26 public wind-power datasets.
 This repository provides fixed-parameter scripts for the paper's main results
 and foundation-model adaptation experiments.
 
+[![WPBench overview](docs/figures/wpbench_overview.png)](docs/figures/wpbench_overview.pdf)
+
 ## Quickstart
 
 Run the following commands from the repository root.
@@ -11,7 +13,7 @@ Run the following commands from the repository root.
 ### 1. Environment
 
 The DLinear example below was checked with Python 3.11.15 and PyTorch 2.10.0
-(CUDA 12.8). The environment export records the package versions.
+(CUDA 12.8).
 
 ```bash
 conda env create -n wpbench -f environment/wpbench_unified_hpo.yml
@@ -72,7 +74,3 @@ Results are saved under
 `results/raw_runs/<model>/<mode>/<dataset>/horizon_<H>/`.
 Set `WPBENCH_RESULT_ROOT` to change the output root.
 `test_report*.csv` lists the evaluation metrics.
-
-For the paper tables, average nMAE at horizons 12 and 24 for Short, and 72 and
-144 for Long. The Yalova example gave 0.093194 and 0.121679; their mean rounds
-to 0.107, matching the Short entry in Table III.
