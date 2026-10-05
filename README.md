@@ -12,9 +12,6 @@ Run the following commands from the repository root.
 
 ### 1. Environment
 
-The DLinear example below was checked with Python 3.11.15 and PyTorch 2.10.0
-(CUDA 12.8).
-
 ```bash
 conda env create -n wpbench -f environment/wpbench_unified_hpo.yml
 conda activate wpbench
@@ -50,27 +47,10 @@ cp -a /path/to/wpbench_6algos_checkpoints_20260611/checkpoints/. checkpoints/
 
 ### 4. Run an experiment
 
-For example, run DLinear on Yalova at horizons 12 and 24:
+All experiment scripts are in
+[`scripts/run_experiments/final_results/`](scripts/run_experiments/final_results/).
+For example, run DLinear on Yalova:
 
 ```bash
-export PYTHON_BIN=python
-export GPUS=0
 bash scripts/run_experiments/final_results/DLinear/standard/tfb-Yalova_final_ready/horizon_12/run.sh
-bash scripts/run_experiments/final_results/DLinear/standard/tfb-Yalova_final_ready/horizon_24/run.sh
 ```
-
-Each script runs one model/dataset/mode/horizon with the selected parameters.
-Other scripts follow this layout:
-
-```text
-scripts/run_experiments/final_results/<model>/<mode>/<dataset>/horizon_<H>/run.sh
-```
-
-Modes are `standard`, `full_shot`, `few_shot_10pct`, and `zero_shot`.
-The [script manifest](scripts/run_experiments/final_results/final_results_manifest.csv)
-lists all experiments and their parameters.
-
-Results are saved under
-`results/raw_runs/<model>/<mode>/<dataset>/horizon_<H>/`.
-Set `WPBENCH_RESULT_ROOT` to change the output root.
-`test_report*.csv` lists the evaluation metrics.
