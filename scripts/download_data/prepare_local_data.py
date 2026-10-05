@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Materialize a local WPBench dataset into the artifact data directory."""
+"""Materialize a local WPBench dataset into dataset/forecasting/."""
 
 from __future__ import annotations
 
@@ -34,7 +34,7 @@ def _hardlink_tree(src: Path, dst: Path, overwrite: bool) -> None:
 
 
 def main() -> None:
-    parser = argparse.ArgumentParser(description="Copy/symlink/hardlink a local WPBench dataset into data/forecasting/.")
+    parser = argparse.ArgumentParser(description="Copy/symlink/hardlink a local WPBench dataset into dataset/forecasting/.")
     parser.add_argument("--source", required=True, help="Source dataset directory, e.g. <original_checkout>/dataset/forecasting/forecasting_wp1_all_shapes_v1")
     parser.add_argument("--dataset-id", default="forecasting_wp1_all_shapes_v1")
     parser.add_argument("--mode", choices=["copy", "symlink", "hardlink"], default="copy")
@@ -46,7 +46,7 @@ def main() -> None:
     if not src.exists() or not src.is_dir():
         raise FileNotFoundError(src)
     artifact_root = Path(args.artifact_root).resolve()
-    dst = artifact_root / "data" / "forecasting" / args.dataset_id
+    dst = artifact_root / "dataset" / "forecasting" / args.dataset_id
 
     if args.mode == "copy":
         _copytree(src, dst, args.overwrite)

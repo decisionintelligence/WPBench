@@ -1,58 +1,78 @@
-# WPBench
+# WPBench: A Comprehensive Benchmark for Wind Power Forecasting
 
-WPBench is a wind-power forecasting benchmark covering 26 datasets and 19
-models. This release includes fixed-parameter experiment scripts for the paper's
-main results and foundation-model adaptation comparison. Trainable models are
-trained and evaluated with the selected parameters; hyperparameter search is
-not required.
+WPBench benchmarks 19 forecasting models on 26 public wind-power datasets.
+This repository provides fixed-parameter scripts for the paper's main results
+and foundation-model adaptation experiments.
 
-Large binary assets are hosted outside GitHub:
+## Quickstart
 
-- WPBench 26 dataset bundle: https://drive.google.com/drive/folders/1j8siMZ-SG6Q2yrfC0hPeAjG28fqImCib?usp=sharing
-- Six-algorithm checkpoint bundle: https://drive.google.com/drive/folders/1sK-XpZl1J7DGdZW_xoZsrbFnLrgFZiCe?usp=sharing
+Run the following commands from the repository root.
 
-## Layout
+### 1. Environment
 
-- `configs/`: experiment and reporting configs.
-- `dataset/forecasting/forecasting_wp1_all_shapes_v1/`: restore the external dataset CSV files here.
-- `scripts/run_experiments/final_results/`: 2968 scripts, each running one experiment.
-- `scripts/run_benchmark.py`: training and evaluation entry point.
-- `ts_benchmark/`: model adapters, metrics, data loading, evaluation, and reporting.
-- `checkpoints/`: placeholder for external TSFM/STFM checkpoints.
-- `environment/`: environment exports and installation notes.
-- `results/raw_runs/`: generated experiment outputs.
-- `docs/`: reproduction instructions and script coverage audit.
-
-## Experiment Coverage
-
-| Scope | Reported numeric cells | Individual experiment scripts |
-| --- | ---: | ---: |
-| Table III: single-turbine main results | 466 | 932 |
-| Table IV: multi-turbine main results | 410 | 820 |
-| Figure 11: few-shot adaptation | — | 608 |
-| Figure 11: zero-shot reference | — | 608 |
-| Total | | 2968 |
-
-Each Short cell averages horizons 12 and 24; each Long cell averages horizons
-72 and 144. Unavailable cells are excluded. Main-table foundation results use
-full-shot adaptation; the same full-shot runs also support Figure 11 and are
-counted once. Multiple metrics from one run do not require separate scripts.
-
-The [final script manifest](scripts/run_experiments/final_results/final_results_manifest.csv)
-maps every task to its script, fixed parameters, paper scope, and original
-source command. The [coverage audit](docs/final_script_coverage_audit.json)
-records the exclusions and verification results. Historical result tables and
-plot-generation scripts are not bundled.
-
-## Quick Run
+The DLinear example below was checked with Python 3.11.15 and PyTorch 2.10.0
+(CUDA 12.8). The environment export records the package versions.
 
 ```bash
-cd /path/to/WPBench_final
+conda env create -n wpbench -f environment/wpbench_unified_hpo.yml
+conda activate wpbench
+```
+
+### 2. Datasets
+
+Download the [26-dataset bundle](https://drive.google.com/drive/folders/1j8siMZ-SG6Q2yrfC0hPeAjG28fqImCib?usp=sharing)
+and restore the CSV files and metadata:
+
+```bash
+mkdir -p dataset/forecasting/forecasting_wp1_all_shapes_v1
+cp -a /path/to/wpbench_26_bundle_20260611/forecasting_wpbench_26/*.csv \
+  dataset/forecasting/forecasting_wp1_all_shapes_v1/
+cp /path/to/wpbench_26_bundle_20260611/metadata/FORECAST_META.csv \
+  dataset/forecasting/FORECAST_META.csv
+```
+
+Keep the supplied CSV filenames and format (`date,data,cols`). To load data
+from another location, set `WPBENCH_FORECASTING_DATASET_PATH` to the directory
+containing `FORECAST_META.csv` and `forecasting_wp1_all_shapes_v1/`.
+
+### 3. Model weights
+
+For FactoST_STA, FactoST_UTP, OpenCity_STFM, SEMPO, TinyTimeMixer, and Toto,
+download the [checkpoint bundle](https://drive.google.com/drive/folders/1sK-XpZl1J7DGdZW_xoZsrbFnLrgFZiCe?usp=sharing)
+and restore it before running their scripts:
+
+```bash
+mkdir -p checkpoints
+cp -a /path/to/wpbench_6algos_checkpoints_20260611/checkpoints/. checkpoints/
+```
+
+### 4. Run an experiment
+
+For example, run DLinear on Yalova at horizons 12 and 24:
+
+```bash
 export PYTHON_BIN=python
 export GPUS=0
 bash scripts/run_experiments/final_results/DLinear/standard/tfb-Yalova_final_ready/horizon_12/run.sh
+bash scripts/run_experiments/final_results/DLinear/standard/tfb-Yalova_final_ready/horizon_24/run.sh
 ```
 
-Scripts detect the project root automatically. Set `WPBENCH_RESULT_ROOT` to
-override the output location. Restore datasets and required checkpoints before
-running; see [the reproduction guide](docs/reproduce.md).
+Each script runs one model/dataset/mode/horizon with the selected parameters.
+Other scripts follow this layout:
+
+```text
+scripts/run_experiments/final_results/<model>/<mode>/<dataset>/horizon_<H>/run.sh
+```
+
+Modes are `standard`, `full_shot`, `few_shot_10pct`, and `zero_shot`.
+The [script manifest](scripts/run_experiments/final_results/final_results_manifest.csv)
+lists all experiments and their parameters.
+
+Results are saved under
+`results/raw_runs/<model>/<mode>/<dataset>/horizon_<H>/`.
+Set `WPBENCH_RESULT_ROOT` to change the output root.
+`test_report*.csv` lists the evaluation metrics.
+
+For the paper tables, average nMAE at horizons 12 and 24 for Short, and 72 and
+144 for Long. The Yalova example gave 0.093194 and 0.121679; their mean rounds
+to 0.107, matching the Short entry in Table III.
