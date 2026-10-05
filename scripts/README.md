@@ -1,8 +1,12 @@
 # Scripts
 
-- `run_benchmark.py`, `run_hpo.py`, `run_hpo_backfill.py`: Python benchmark entry points.
-- `run_experiments/icde_full_scripts/`: authoritative selected ICDE experiment script tree.
+- `run_benchmark.py`: fixed-parameter training and evaluation entry point.
+- `run_experiments/final_results/`: 2968 final-result shell scripts, one experiment per script.
 - `download_data/`: optional local data materialization helpers.
 - `preprocess/`: optional dataset cleaning and graph metadata helpers.
 
-Historical aggregation scripts and copied result-table generation helpers were removed from this runnable artifact.
+The shell scripts cover the main tables and the foundation adaptation comparison.
+Their manifest records model, dataset, mode, horizon, and original source command.
+Hyperparameter-search scripts, duplicate entry points, and repeated experiment
+scripts have been removed. Historical table aggregation and plot-generation
+helpers are not bundled.

@@ -1,26 +1,18 @@
 # Artifact Checklist
 
-## Organized
-
-- Benchmark runtime code: `ts_benchmark/`.
-- Python run entry points: `scripts/run_benchmark.py`, `scripts/run_hpo.py`, `scripts/run_hpo_backfill.py`.
-- Full selected ICDE script tree: `scripts/run_experiments/icde_full_scripts/` with 3589 scripts.
-- Final conflict choices overlaid: `scripts/run_experiments/icde_full_scripts/final_selected_overlay_manifest.csv` with 41 scripts.
-- Selected 26 datasets: `data/forecasting/forecasting_wp1_all_shapes_v1/`.
-- Dataset manifest: `data/metadata/forecasting_wpbench_26_selected_files.csv`.
+- Runtime benchmark and model adapters: `ts_benchmark/`.
+- Training/evaluation entry point: `scripts/run_benchmark.py`.
+- Final-result scripts: `scripts/run_experiments/final_results/`, 2968 shell files.
+- One task per shell script, uniquely identified by model, dataset, mode, and horizon.
+- Main-table coverage: 1752 tasks, twice the 876 numeric cells in Tables III/IV.
+- Foundation adaptation coverage: 608 few-shot and 608 zero-shot tasks.
+- Task-to-source mapping: `scripts/run_experiments/final_results/final_results_manifest.csv`.
+- Machine-readable coverage and cleanup audit: `docs/final_script_coverage_audit.json`.
+- External dataset and checkpoint restoration instructions: `docs/reproduce.md`.
 - Environment exports: `environment/`.
-- Checkpoint placeholders: `checkpoints/tsfm/`, `checkpoints/stfm/`.
 
-## Removed From This Runnable Artifact
+All 2968 scripts passed shell syntax, command-argument capture, and benchmark CLI
+parser checks. Final task coverage has zero missing, extra, or duplicate tasks.
 
-- Empty placeholder namespace `wpbench/`.
-- Historical aggregated result tables and copied raw metric outputs.
-- Historical aggregation scripts and standalone evaluation helper scripts.
-- Duplicate smoke/generated/curated run-script directories superseded by `icde_full_scripts/`.
-- Script conflict work directories such as `_conflicts`, `_tools`, and old review packages.
-
-## Needs Manual Confirmation
-
-- Foundation/STFM checkpoints must be provided separately under `checkpoints/`.
-- Some models may still require GPU-specific resource tuning before large batch runs.
-- The artifact contains scripts and data for rerunning experiments, not precomputed paper tables.
+Datasets and checkpoint weights must be restored separately. These checks did
+not execute training or compare newly generated numeric results with the paper.
