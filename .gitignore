@@ -1,0 +1,20 @@
+# Python caches and local environments
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.venv/
+venv/
+
+# Generated benchmark outputs
+results/raw_runs/
+slurm_logs/
+*.log
+
+# Locally restored datasets and model weights
+dataset/forecasting/
+data/forecasting/**/*.csv
+checkpoints/**/*.pt
+checkpoints/**/*.pth
+checkpoints/**/*.ckpt
+checkpoints/**/*.bin
+checkpoints/**/*.safetensors
